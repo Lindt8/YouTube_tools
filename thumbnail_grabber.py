@@ -4,8 +4,7 @@ https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbna
 https://stackoverflow.com/questions/8286352/how-to-save-an-image-locally-using-python-whose-url-address-i-already-know
 @author: Hunter
 
-This code expects a text file of 1 YouTube URL per line where the last 11 characters 
-of each line are the video ID (so remove other trailing bits of the URL first).
+This code expects a text file of 1 YouTube URL per line.  It will crawl through each URL in the text file and save an image from each with the filename being the same as the video title.
 
 '''
 
