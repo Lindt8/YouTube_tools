@@ -17,7 +17,8 @@ The code asks the user to provide a directory.  The code will then do this proce
 @author: Hunter
 '''
 
-import taglib
+#import taglib #@UnresolvedImport
+from mutagen.easyid3 import EasyID3
 import os
 from datetime import datetime
 import urllib.request
@@ -25,8 +26,13 @@ from tkinter import Tk
 from tkinter import filedialog
 import re
 
+# EasyID3 method:  https://stackoverflow.com/questions/4040605/does-anyone-have-good-examples-of-using-mutagen-to-write-files
+
 Tk().withdraw() # we don't want a full GUI, so keep the root window from appearing
 path_dir = filedialog.askdirectory(initialdir=r"D:\Music\YouTube_Downloads", title="Select directory with files to be tagged") # show an "Open" dialog box and return the path to the selected file
+
+Label_all_songs_as_single_album = False
+album_name = 'Example Album Name'
 
 for file in os.listdir(path_dir):
     if file.endswith(".mp3"):
@@ -43,20 +49,44 @@ for file in os.listdir(path_dir):
             genre = genre.lstrip()
         else:
             genre_incl = False
+            try:
+                print(filename)
+            except:
+                print(filename.encode("utf-8"))
+            songname = filename
             artist, songname = re.split(r'[]-]',filename)[0:2]
         
-        artist = artist.rstrip()
-        artist = artist.lstrip()
+        #artist = artist.rstrip()
+        #artist = artist.lstrip()
         songname = songname.rstrip()
         songname = songname.lstrip()
+        
+        # Manually set artist and album
+        #artist = 'Example  Artist'
+        
         
         #if genre_incl: print(genre)
         #print(artist)
         #print(songname)
         
-        f = taglib.File(song_file)
-        f.tags["ARTIST"] = artist
-        f.tags["TITLE"] = songname
-        if genre_incl: f.tags["GENRE"] = genre
         
-        retval = f.save()
+        #f = taglib.File(song_file)
+        #f.tags["ARTIST"] = artist
+        #f.tags["TITLE"] = songname
+        #if genre_incl: f.tags["GENRE"] = genre
+        
+        f = EasyID3(song_file)
+        f["artist"] = artist
+        f["title"] = songname
+        if genre_incl: f["genre"] = genre
+        
+        if Label_all_songs_as_single_album:
+            # Manually set album
+            #f.tags["ALBUM"] = album_name
+            f["album"] = album_name
+        
+        # Manually set genre
+        #f.tags["GENRE"] = "Example Genre"
+        
+        #retval = f.save()
+        f.save()
